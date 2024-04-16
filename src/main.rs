@@ -10,6 +10,7 @@ mod mapper;
 
 use anyhow;
 use mapper::Mapper;
+use rayon::prelude::*;
 use rayon::iter::IndexedParallelIterator;
 use rayon::iter::IntoParallelRefIterator;
 use rayon::iter::ParallelIterator;
@@ -69,7 +70,7 @@ fn main() {
             .enumerate()
             .step_by(2)
             .map(|(i, start)| {
-                (*start..*start + seeds[i + 1])
+                (*start..*start + seeds[i + 1]).into_par_iter()
                     .map(|seed| mapper.project(seed))
                     .min()
                     .unwrap()
